@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Quiz · Doctrina Social y Familia</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@500;700&family=Instrument+Sans:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#eef1f4;--card:#fff;--ink:#14213d;--mut:#5b6679;--line:#cfd6e0;--acc:#1f5f8b;--ok:#17703f;--okb:#e3f4ea;--no:#a8231b;--nob:#fbe7e5;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1520;--card:#18212f;--ink:#e8edf5;--mut:#9aa6b8;--line:#2c394d;--acc:#6db3e8;--ok:#5fd08f;--okb:#12301f;--no:#ff8a80;--nob:#3a1816}}
+:root[data-theme="dark"]{--bg:#0f1520;--card:#18212f;--ink:#e8edf5;--mut:#9aa6b8;--line:#2c394d;--acc:#6db3e8;--ok:#5fd08f;--okb:#12301f;--no:#ff8a80;--nob:#3a1816}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.5 "Instrument Sans",system-ui,sans-serif;min-height:100vh;display:flex;justify-content:center;padding:20px 14px}
+main{width:100%;max-width:680px}
+h1,h2{font-family:Fraunces,Georgia,serif;line-height:1.2;margin:0}
+h1{font-size:2rem;margin-bottom:10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:24px}
+.mut{color:var(--mut)}
+.bar{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin:0 0 6px}
+.bar i{display:block;height:100%;background:var(--acc);transition:width .3s}
+.meta{display:flex;justify-content:space-between;font-size:.88rem;color:var(--mut);margin-bottom:18px}
+h2{font-size:1.4rem;margin-bottom:18px}
+.opt{display:flex;gap:12px;width:100%;text-align:left;background:transparent;color:var(--ink);font:inherit;border:1.5px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s}
+.opt b{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-size:.8rem}
+.opt:hover:not(:disabled){border-color:var(--acc)}
+.opt:disabled{cursor:default}
+.opt.ok{border-color:var(--ok);background:var(--okb)}
+.opt.ok b{background:var(--ok);border-color:var(--ok);color:#fff}
+.opt.no{border-color:var(--no);background:var(--nob)}
+.opt.no b{background:var(--no);border-color:var(--no);color:#fff}
+.fb{border-radius:10px;padding:14px 16px;margin:6px 0 16px;animation:in .25s}
+.fb strong{display:block;margin-bottom:4px}
+.fb.ok{background:var(--okb);color:var(--ok)}.fb.no{background:var(--nob);color:var(--no)}
+.fb span{color:var(--ink)}
+@keyframes in{from{opacity:0;transform:translateY(-4px)}}
+.btn{font:inherit;font-weight:600;background:var(--acc);color:var(--card);border:0;border-radius:10px;padding:12px 22px;cursor:pointer}
+.btn.alt{background:transparent;color:var(--acc);border:1.5px solid var(--acc);margin-right:8px}
+button:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.row{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px}
+.big{font:700 3rem/1 Fraunces,Georgia,serif;margin:10px 0}
+.miss{border-top:1px solid var(--line);padding:12px 0;font-size:.95rem}
+.miss em{color:var(--ok);font-style:normal;font-weight:600}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main id="app"></main>
+<script>
+const T=["Participación","Solidaridad","Valores sociales","La familia, célula vital","La familia protagonista","Retos de la familia"];
+// [tema, pregunta, correcta, mal1, mal2, mal3, retroalimentación]
+const Q=[
+[0,"La participación es consecuencia directa de qué principio?","La subsidiariedad","La solidaridad","El destino universal de los bienes","La autoridad estatal","La participación se deriva de la subsidiariedad: el ciudadano contribuye a la vida cultural, económica, política y social de su comunidad."],
+[0,"Según la doctrina, participar en la vida de la comunidad es un deber de…","Todos","Solo los gobernantes","Solo los mayores de 40 años","Solo quienes tienen estudios","Es un deber de todos y no puede restringirse ni delimitarse, por su importancia para el crecimiento humano."],
+[0,"¿De quiénes es indispensable favorecer especialmente la participación?","De los más débiles","De los más ricos","De los funcionarios","De los partidos políticos","Hay que favorecer la participación, sobre todo, de los más débiles."],
+[0,"La alternancia de los dirigentes políticos sirve para evitar…","Que se instauren privilegios ocultos (compadrazgo, nepotismo)","Que el pueblo vote","El gasto público","Los cambios de ley","La alternancia previene privilegios ocultos como el compadrazgo y el nepotismo."],
+[0,"La participación es uno de los pilares de…","Los ordenamientos democráticos","Los regímenes totalitarios","El libre mercado únicamente","La burocracia estatal","Es pilar de la democracia y una de las mejores garantías de que ésta permanezca."],
+[0,"Según el documento, toda democracia debe ser…","Participativa","Representativa solamente","Confesional","Tecnocrática","Toda democracia debe ser participativa: los ciudadanos deben ser informados, escuchados e implicados."],
+[0,"¿Qué lleva a muchas personas a abstenerse de participar en lo político?","La corrupción y el ventajismo personal de algunos funcionarios","El exceso de información","La falta de elecciones","La edad avanzada","La corrupción y el ventajismo generan desinterés por lo social y político."],
+[0,"¿Qué es necesario para superar los obstáculos a la participación?","Una obra educativa","Más burocracia","Reducir el número de ciudadanos votantes","Eliminar las instituciones","Para superar los obstáculos es necesaria una obra educativa que tome en cuenta contextos históricos y sociales."],
+[0,"¿Por qué en los regímenes totalitarios se niega el derecho a participar?","Se considera una amenaza para el Estado mismo","Porque es muy costoso","Porque nadie lo pide","Porque la ley lo exige a todos","En ellos el derecho se niega de raíz, al verlo como amenaza para el Estado."],
+[1,"La solidaridad se define como…","La caridad social","Un sentimiento pasajero","Un contrato de ayuda mutua","Un impuesto para los pobres","Se define como caridad social: la ayuda que damos a las personas necesitadas."],
+[1,"¿Bajo qué dos aspectos se presenta la solidaridad?","Como principio social y como virtud moral","Como derecho y como ley","Como sentimiento y como obligación legal","Como economía y como política","Se presenta como principio social y como virtud moral."],
+[1,"Como principio social, la solidaridad busca que las “estructuras de pecado” sean…","Transformadas en estructuras de solidaridad","Ignoradas","Conservadas","Reemplazadas por el mercado","Se transforman mediante la creación o modificación de leyes, reglas de mercado y ordenamientos."],
+[1,"Como virtud moral, la solidaridad NO es…","Un sentimiento superficial por los males ajenos","Una determinación firme y perseverante","Un empeño por el bien común","Responsabilidad de todos por todos","Es determinación firme y perseverante por el bien común, no un sentimiento superficial."],
+[1,"¿Qué debe excluirse al buscar puntos de entendimiento para el bien del otro?","El egoísmo","La libertad","La justicia","La cultura","El compromiso solidario exige buscar entendimiento incluso donde hay problemas, excluyendo el egoísmo."],
+[1,"¿Con cuál de estos NO se vincula estrechamente la solidaridad en el documento?","El interés individual por encima del bien común","El bien común","La paz en el mundo","El destino universal de los bienes","Se vincula con bien común, destino universal de los bienes, igualdad, paz y libertad; no con el interés individual."],
+[1,"¿Cuál es la cumbre insuperable de la perspectiva solidaria?","La vida de Jesús de Nazaret","La Declaración de los Derechos Humanos","El desarrollo tecnológico","El pensamiento de los filósofos griegos","Jesús, el Hombre nuevo, solidario con la humanidad hasta la muerte de cruz (Flp 2,8)."],
+[1,"A la luz de la fe, la solidaridad se reviste de dimensiones cristianas de…","Perdón y reconciliación","Competencia y mérito","Control y vigilancia","Tolerancia y neutralidad","Se reviste de perdón y reconciliación."],
+[1,"Para el cristiano, el prójimo es…","Imagen viva de Dios Padre","Solo un ciudadano con derechos","Un cliente","Alguien que debe ganarse el afecto","El prójimo es imagen viva de Dios Padre, rescatado por Cristo; debe ser amado incluso si es enemigo."],
+[1,"¿A qué se deben las grandes desigualdades entre países desarrollados y en vías de desarrollo?","Explotación, opresión y corrupción","Al clima","Al tamaño de la población","A la falta de tecnología únicamente","Estos factores influyen negativamente en el desarrollo humano, pese a la interdependencia."],
+[2,"¿Cuáles son los valores sociales fundamentales según el documento?","Verdad, libertad, justicia y amor","Poder, riqueza, fama y éxito","Orden, disciplina, trabajo y ahorro","Igualdad, fraternidad, progreso y tradición","Son inherentes a la dignidad de la persona: verdad, libertad, justicia y amor."],
+[2,"¿Por qué la Iglesia no asume competencias técnicas y temporales?","Por respeto a la autonomía de la sociedad","Por falta de recursos","Porque está prohibido por ley","Por desinterés en lo social","Respeta la autonomía de la sociedad, pero interviene para apoyar o defender los valores."],
+[2,"La verdad, según el documento, no puede reducirse a…","Simples opiniones","Un compromiso responsable","Un valor moral","Una exigencia de transparencia","Hay que promoverla sin relativizar sus exigencias."],
+[2,"La libertad es signo eminente de…","La imagen divina en el hombre","El poder político","La riqueza material","La edad adulta","Es signo de la imagen divina y de la dignidad de cada persona."],
+[2,"¿Cuándo existe verdaderamente la libertad?","Cuando hay relación social regulada por la verdad y la justicia","Cuando cada uno hace lo que quiere","Cuando no hay leyes","Cuando el Estado decide por todos","No debe reducirse al ejercicio arbitrario e incontrolado de la autonomía personal."],
+[2,"La justicia consiste en…","La firme voluntad de dar a Dios y al prójimo lo que les es debido","Castigar a quien se equivoca","Aplicar siempre la ley escrita","Repartir todo por igual","Se traduce en reconocer al otro como persona y es criterio determinante de la moralidad."],
+[2,"¿Cuáles son las formas clásicas de la justicia?","Conmutativa, distributiva y legal","Civil, penal y mercantil","Social, política y económica","Humana, divina y natural","Además, en la Iglesia cobra importancia la justicia social."],
+[2,"¿Qué criterios amenazan hoy el valor y la dignidad humana?","La utilidad, el tener y el poder","La fe, la esperanza y la caridad","La verdad, el bien y la belleza","La cultura, el arte y la ciencia","La tendencia a recurrir a utilidad, tener y poder reduce la justicia."],
+[2,"“Opus solidaritatis pax” significa que la paz es fruto de…","La solidaridad","La fuerza militar","El comercio","La tecnología","Si la paz es fruto de la justicia (Is 32,17), también lo es de la solidaridad."],
+[2,"“Por sí sola la justicia no basta”: ¿a qué debe abrirse?","Al amor","A la ley","Al poder","Al mercado","Puede incluso negarse a sí misma si no se abre al amor."],
+[2,"¿Cuál es el criterio supremo y universal de toda la ética social?","La caridad","La ley civil","La utilidad","La tradición","Verdad, justicia y libertad nacen y se desarrollan de la caridad."],
+[2,"¿Qué significa “summum ius, summa iniuria”?","Que el derecho aplicado sin amor puede volverse la mayor injusticia","Que la ley es suprema","Que la justicia es ciega","Que el derecho vence a la caridad","La justicia debe ser corregida por el amor misericordioso."],
+[2,"Además de la ayuda material, ¿qué otro acto es de caridad social?","Organizar la sociedad para que el prójimo no padezca miseria","Pagar impuestos","Evitar toda política","Hacer donaciones anónimas únicamente","La caridad social busca mejorar la vida del prójimo o eliminar las causas de su indigencia."],
+[3,"“No es bueno que el hombre esté solo” es una cita de…","Génesis 2, 18","Mateo 19, 3","Proverbios 1, 8","Juan 15, 13","Subraya la centralidad de la familia y la pareja como primera comunión de personas."],
+[3,"La familia es considerada cuna de…","La vida y del amor","La política y el poder","La cultura y la ciencia únicamente","La economía","En ella se aprende el amor y la fidelidad del Señor."],
+[3,"Al nacer y vivir en una familia, Jesús dio al matrimonio dignidad de…","Sacramento de la Nueva Alianza","Contrato civil","Costumbre social","Rito opcional","Constituyó el matrimonio como sacramento (Mt 19, 3-9)."],
+[3,"La Iglesia considera la familia como…","La primera sociedad natural","Una institución puramente cultural","Una creación del Estado","Una asociación voluntaria","Es titular de derechos propios y originarios, y está en el centro de la vida social."],
+[3,"¿Qué prioridad tiene la familia respecto al Estado?","La familia precede al Estado porque es condición para que exista","El Estado precede a la familia","Ambos tienen igual origen legal","La familia depende del reconocimiento estatal","Su legitimación está en la naturaleza humana, no en el reconocimiento del Estado."],
+[3,"El Estado ayuda a la familia según el principio de…","Subsidiariedad","Centralización","Neutralidad","Competencia","No puede quitarle las tareas que ella puede desempeñar sola y debe auxiliarla en lo que necesita."],
+[3,"¿Qué artículo de la Constitución salvadoreña dice que la familia es la base fundamental de la sociedad?","Art. 32","Art. 15","Art. 36","Art. 50","El Art. 32 le garantiza la protección del Estado."],
+[3,"Según la Constitución salvadoreña, el fundamento legal de la familia es…","El matrimonio, con igualdad jurídica de los cónyuges","La unión libre","La decisión del juez","El registro civil","Aunque la falta de matrimonio no afecta los derechos a favor de la familia."],
+[3,"Art. 36: los hijos nacidos dentro o fuera del matrimonio y los adoptivos tienen…","Iguales derechos frente a sus padres","Derechos distintos según su origen","Derechos solo si hay matrimonio","Derechos limitados","Los padres deben darles protección, asistencia, educación y seguridad."],
+[3,"Una sociedad a medida de la familia es garantía contra…","El individualismo y el colectivismo","La democracia","El comercio","La educación","En ella la persona es siempre fin y nunca medio."],
+[4,"Las familias deben ser ante la política familiar…","Protagonistas y sujeto activo","Solo destinatarias","Espectadoras","Subordinadas al Estado","No son sólo objeto de la acción política: pueden y deben transformar la sociedad."],
+[4,"¿Qué lógica debe orientar a la familia como protagonista de la vida económica?","Compartir y la solidaridad entre generaciones","La lógica del mercado","La competencia","La acumulación","La familia no se orienta por la lógica del mercado."],
+[4,"El salario familiar es aquel que…","Permite vivir dignamente y ahorrar para adquirir propiedades","Se paga solo a casados","Es igual para todos","Cubre solo alimentos","El ahorro y la propiedad familiar son garantía de libertad."],
+[4,"Las labores de cuidado familiar, comenzando por las de la madre, deben ser…","Reconocidas y valoradas, incluso con retribución económica","Consideradas improductivas","Dejadas al mercado","Ignoradas por la ley","Son una actividad laboral eminentemente personal y personalizante."],
+[5,"¿Qué palabra introduce el Vaticano II (GS 48) en lugar de “contrato”?","Alianza","Pacto civil","Convenio","Sociedad","Expresa un consentimiento personal e irrevocable."],
+[5,"¿Qué papa publicó la encíclica Humanae Vitae (1968)?","Pablo VI","Juan Pablo II","Benedicto XVI","Francisco","Reivindicó la grandeza del amor conyugal."],
+[5,"Según Humanae Vitae, el amor conyugal es…","Humano, total, fiel, exclusivo y fecundo","Libre, temporal y reversible","Privado y contractual","Solo afectivo","Es lo que recoge HV 7."],
+[5,"¿Qué exhortación publicó Juan Pablo II en 1981?","Familiaris Consortio","Amoris Laetitia","Gaudium et Spes","Deus Caritas Est","Une aspectos doctrinales y pastorales para promover familias cristianas."],
+[5,"¿Qué llama el Papa Francisco “buenismo destructivo”?","Vendar heridas en nombre de la misericordia sin curarlas antes","Defender la doctrina","Exigir fidelidad","La acción de los laicos","Trata los síntomas, pero no las causas ni las raíces."],
+[5,"¿Qué modelo se propone para la iniciación cristiana de la pastoral familiar?","El catecumenado bautismal","Cursos virtuales","Retiros anuales","Charlas ocasionales","Involucra laicos formados, movimientos familiares, equipo de pastoral familiar y sacerdotes."],
+[5,"¿Qué ayuda a acompañar y formar a los padres cristianos?","Escuelas de Padres y Centros de Orientación Familiar","Solo la escuela pública","Medios de comunicación","Las redes sociales","También sirven para casos dudosos sobre la validez del matrimonio."]
+];
+const $=document.getElementById("app");
+const sh=a=>{a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]}return a};
+let list,i,score,miss,done;
+const esc=s=>s.replace(/[&<>]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;"}[c]));
+function home(){
+ $.innerHTML=`<div class="card"><h1>Doctrina Social y Familia</h1>
+ <p class="mut">${Q.length} preguntas de tus 6 presentaciones. Las preguntas y las opciones cambian de orden cada vez. Elige cuántas quieres responder:</p>
+ <div class="row">${[10,20,Q.length].map(n=>`<button class="btn alt" data-n="${n}">${n==Q.length?"Todas ("+n+")":n+" preguntas"}</button>`).join("")}</div></div>`;
+ $.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>start(+b.dataset.n));
+}
+function start(n){list=sh(Q).slice(0,n);i=0;score=0;miss=[];ask()}
+function ask(){
+ const q=list[i],opts=sh([q[2],q[3],q[4],q[5]]);done=false;
+ $.innerHTML=`<div class="bar"><i style="width:${i/list.length*100}%"></i></div>
+ <div class="meta"><span>Pregunta ${i+1} de ${list.length} · ${T[q[0]]}</span><span>Aciertos: ${score}</span></div>
+ <div class="card"><h2>${esc(q[1])}</h2><div id="o">${opts.map((t,k)=>`<button class="opt"><b>${"ABCD"[k]}</b><span>${esc(t)}</span></button>`).join("")}</div>
+ <div id="f" aria-live="polite"></div></div>`;
+ $.querySelectorAll(".opt").forEach((b,k)=>b.onclick=()=>pick(b,opts[k],q));
+}
+function pick(b,t,q){
+ if(done)return;done=true;const ok=t===q[2];
+ document.querySelectorAll(".opt").forEach((x,k)=>{x.disabled=true;if(x.lastChild.textContent===q[2])x.classList.add("ok")});
+ if(ok)score++;else{b.classList.add("no");miss.push(q)}
+ const last=i==list.length-1;
+ document.getElementById("f").innerHTML=`<div class="fb ${ok?"ok":"no"}"><strong>${ok?"¡Correcto!":"Incorrecto"}</strong><span>${ok?"":"La respuesta correcta es: <b>"+esc(q[2])+"</b>. "}${esc(q[6])}</span></div><button class="btn" id="nx">${last?"Ver resultado":"Siguiente"}</button>`;
+ const nx=document.getElementById("nx");nx.focus();nx.onclick=()=>{i++;i<list.length?ask():end()};
+}
+function end(){
+ const p=Math.round(score/list.length*100);
+ $.innerHTML=`<div class="bar"><i style="width:100%"></i></div><div class="card"><h1>Resultado</h1><div class="big">${score}/${list.length}</div>
+ <p class="mut">${p}% de aciertos. ${p>=90?"Excelente dominio del tema.":p>=70?"Buen trabajo, repasa los puntos fallados.":p>=50?"Vas por buen camino; vale la pena repasar.":"Conviene repasar las presentaciones y volver a intentarlo."}</p>
+ ${miss.length?"<h2 style='font-size:1.1rem;margin:18px 0 4px'>Para repasar</h2>"+miss.map(q=>`<div class="miss">${esc(q[1])}<br><em>${esc(q[2])}</em></div>`).join(""):""}
+ <div class="row"><button class="btn" id="r">Intentar de nuevo</button><button class="btn alt" id="h">Inicio</button></div></div>`;
+ document.getElementById("r").onclick=()=>start(list.length);document.getElementById("h").onclick=home;
+}
+home();
+</script>
+</body>
+</html>
